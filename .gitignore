@@ -1,3 +1,6 @@
+# Solution and intermediate files folder
+build/
+
 # Prerequisites
 *.d
 
