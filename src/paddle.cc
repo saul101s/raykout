@@ -9,20 +9,17 @@ constexpr int HEIGHT = 10;
 
 namespace Raykout {
 Paddle::Paddle(const Config& config)
-    : speed_(0.0f), max_speed_(config.max_speed), acceleration_(config.acceleration), damping_(config.damping), x_(0.0f), y_(0.0f) {}
-
-void Paddle::setPosition(float x, float y) {
-  x_ = x;
-  y_ = y;
-}
+    : max_speed_(config.max_speed), acceleration_(config.acceleration), damping_(config.damping) {}
 
 void Paddle::update(float dt) {
   handleInput(dt);
   updatePosition(dt);
 }
 
-void Paddle::draw() {
-  DrawRectangle((int)x_, (int)y_, WIDTH, HEIGHT, WHITE);
+void Paddle::draw() const {
+  int x = (int)transform.position.x;
+  int y = (int)transform.position.y;
+  DrawRectangle(x, y, (int)scaledWidth(), (int)scaledHeight(), WHITE);
 }
 
 void Paddle::handleInput(float dt) {
@@ -31,37 +28,45 @@ void Paddle::handleInput(float dt) {
   accelerating = false;
 
   if (IsKeyDown('D')) {
-    speed_ += acceleration_ * dt;
-    if (speed_ > max_speed_) {
-      speed_ = max_speed_;
-    }
+    velocity_.x += acceleration_ * dt;
     accelerating = true;
   }
 
   if (IsKeyDown('A')) {
-    speed_ -= acceleration_ * dt;
-    if (speed_ < -max_speed_) {
-      speed_ = -max_speed_;
-    }
+    velocity_.x -= acceleration_ * dt;
     accelerating = true;
   }
 
+  if (velocity_.length() > max_speed_) {
+    velocity_.setLength(max_speed_);
+  }
+
   if (!accelerating) {
-    speed_ *= std::powf(damping_, dt);
+    float speed = velocity_.length();
+    speed *= std::powf(damping_, dt);
+    velocity_.setLength(speed);
   }
 }
 
 void Paddle::updatePosition(float dt) {
-  x_ += speed_ * dt;
+  transform.position += velocity_ * dt;
 
-  if (speed_ > 0 && x_ + WIDTH > GetScreenWidth()) {
-    x_     = (float)GetScreenWidth() - (float)WIDTH;
-    speed_ = 0.0f;
+  if (velocity_.x > 0 && transform.position.x + scaledWidth() > (float)GetScreenWidth()) {
+    transform.position.x = (float)GetScreenWidth() - scaledWidth();
+    velocity_.x          = 0.0f;
   }
 
-  if (speed_ < 0 && x_ < 0) {
-    x_     = 0;
-    speed_ = 0.0f;
+  if (velocity_.x < 0 && transform.position.x < 0) {
+    transform.position.x = 0;
+    velocity_.x          = 0.0f;
   }
+}
+
+float Paddle::scaledWidth() const {
+  return (float)WIDTH * transform.scale.x;
+}
+
+float Paddle::scaledHeight() const {
+  return (float)HEIGHT * transform.scale.y;
 }
 }  // namespace Raykout

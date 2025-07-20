@@ -1,5 +1,7 @@
 #pragma once
 
+#include "transform2d.h"
+
 namespace Raykout {
 class Paddle {
  public:
@@ -9,6 +11,8 @@ class Paddle {
     float damping;
   };
 
+  Transform2d transform;
+
  public:
   Paddle(const Config& config);
   Paddle()                           = delete;
@@ -16,19 +20,19 @@ class Paddle {
   Paddle(const Paddle& o)            = default;
   Paddle& operator=(const Paddle& o) = default;
 
-  void setPosition(float x, float y);
   void update(float dt);
-  void draw();
+  void draw() const;
 
  private:
   void handleInput(float dt);
   void updatePosition(float dt);
+  float scaledWidth() const;
+  float scaledHeight() const;
 
  private:
-  float speed_;
+  Vector2 velocity_;
   float max_speed_;
   float acceleration_;
   float damping_;
-  float x_, y_;
 };
 }  // namespace Raykout

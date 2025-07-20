@@ -25,8 +25,9 @@ void Application::initialize() {
   // Initialize the paddle
   const Raykout::Settings& settings = Raykout::GetSettings();
   Raykout::Paddle::Config paddle_config{settings.paddle_max_speed, settings.paddle_acceleration, settings.paddle_damping};
-  paddle = std::make_unique<Paddle>(paddle_config);
-  paddle->setPosition(600, 700);
+  paddle                     = std::make_unique<Paddle>(paddle_config);
+  paddle->transform.position = Vector2{600.0f, 700.0f};
+  paddle->transform.scale    = Vector2{2.0f, 0.5f};
 }
 
 void Application::loop() {
