@@ -32,7 +32,8 @@ project "Raykout"
 
   postbuildcommands {
    "{MKDIR} ".."\"%{wks.location}../bin/\"",
-   "{COPYFILE} %[%{!cfg.buildtarget.abspath}] \"%{wks.location}../bin/%{cfg.buildtarget.name}\""
+   "{COPYFILE} %[%{!cfg.buildtarget.abspath}] \"%{wks.location}../bin/%{cfg.buildtarget.name}\"",
+   "{COPYDIR} \"%{wks.location}../assets/\" \"%{wks.location}../bin/assets\"",
   }
 
   -- Generate asm

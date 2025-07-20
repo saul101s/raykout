@@ -1,6 +1,9 @@
 # Solution and intermediate files folder
 build/
 
+# Binaries
+bin/
+
 # Prerequisites
 *.d
 
