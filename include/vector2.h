@@ -15,7 +15,7 @@ struct Vector2 {
     float d[2];
   };
 
-  Vector2() : x(0), y(0) {}
+  Vector2() : x(0.0f), y(0.0f) {}
   Vector2(float x, float y) : x(x), y(y) {}
   ~Vector2()                           = default;
   Vector2(const Vector2& o)            = default;
@@ -31,6 +31,7 @@ struct Vector2 {
     else
       return *this / length();
   };
+
   const Vector2& normalize() {
     if (isZeroLength())
       return *this;
@@ -42,6 +43,11 @@ struct Vector2 {
     *this = normalized() * v;
   }
 
+  Vector2 projectedOnto(const Vector2& q) const {
+    // projqP = ((P * Q) / ||Q||^2) * Q
+    return q * ((*this * q) / (q * q));
+  }
+
   Vector2 operator+(const Vector2& o) const { return Vector2{x + o.x, y + o.y}; }
   const Vector2& operator+=(const Vector2& o) {
     x += o.x;
@@ -49,6 +55,7 @@ struct Vector2 {
     return *this;
   }
 
+  Vector2 operator-() const { return Vector2{-x, -y}; }
   Vector2 operator-(const Vector2& o) const { return Vector2{x - o.x, y - o.y}; }
   const Vector2& operator-=(const Vector2& o) {
     x -= o.x;
