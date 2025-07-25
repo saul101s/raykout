@@ -43,9 +43,55 @@ struct Vector2 {
     *this = normalized() * v;
   }
 
-  Vector2 projectedOnto(const Vector2& q) const {
+  Vector2 projected(const Vector2& q) const {
     // projqP = ((P * Q) / ||Q||^2) * Q
     return q * ((*this * q) / (q * q));
+  }
+
+  Vector2 reflected(const Vector2& q) const {
+    Vector2 result    = -*this;
+    Vector2 projected = result.projected(q);
+    Vector2 diff      = projected - result;
+    result += diff * 2;
+    return result.normalized() * length();
+  }
+
+  void reflect(const Vector2& q) {
+    *this = this->reflected(q);
+  }
+
+  Vector2 halfWay(const Vector2& q) {
+    return (*this + q) / 2.0f;
+  }
+
+  Vector2 rotated(float angle) {
+    Vector2 result;
+
+    float cos = std::cosf(angle);
+    float sin = std::sinf(angle);
+
+    result.x = x * cos - y * sin;
+    result.y = x * sin + y * cos;
+
+    return result;
+  }
+
+  float cos(const Vector2& o) {
+    return normalized() * o.normalized();
+  }
+
+  float sin(const Vector2& o) {
+    /*
+      a x b = | i  j  k |
+              | 3  2  0 | = -3k -4k = -7k
+              | 2 -1  0 |
+
+      | a x b | = |a| * |b| * sin(a,b)
+    */
+
+    Vector2 v1 = normalized();
+    Vector2 v2 = o.normalized();
+    return v1.x * v2.y - v1.y * v2.x;
   }
 
   Vector2 operator+(const Vector2& o) const { return Vector2{x + o.x, y + o.y}; }

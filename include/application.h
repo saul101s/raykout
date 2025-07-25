@@ -18,8 +18,10 @@ class Application {
  private:
   void initialize();
   void loop();
-  void update();
+  void update(float dt);
+  void solveCollisions(float dt);
   void draw();
+  void reload();
 
  private:
   std::unique_ptr<Paddle> paddle;

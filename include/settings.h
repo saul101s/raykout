@@ -12,6 +12,7 @@ struct PaddleSettings {
 };
 
 struct BallSettings {
+  float max_speed;
   float radius;
 };
 
@@ -27,12 +28,13 @@ struct Settings {
 
   Settings() {
     // Default values
-    screen.width = 1200;
-    screen.height = 800;
-    paddle.max_speed = 500.0f;
+    screen.width        = 1200;
+    screen.height       = 800;
+    paddle.max_speed    = 500.0f;
     paddle.acceleration = 3000.0f;
-    paddle.damping = 0.01f;
-    ball.radius = 8.0f;
+    paddle.damping      = 0.01f;
+    ball.max_speed      = 700.0f;
+    ball.radius         = 8.0f;
   }
 };
 
@@ -48,6 +50,8 @@ static T GetSetting(const char* section, const char* key) {
 }
 
 static void LoadSettings() {
+  if (s_loaded) return;
+
   s_ini_file.load(SETTINGS_PATH);
 
   // Paddle settings
@@ -56,13 +60,19 @@ static void LoadSettings() {
   s_settings.paddle.damping      = GetSetting<float>("paddle", "damping");
 
   // Ball settings
-  s_settings.ball.radius = GetSetting<float>("ball", "radius");
+  s_settings.ball.max_speed = GetSetting<float>("ball", "max_speed");
+  s_settings.ball.radius    = GetSetting<float>("ball", "radius");
 
   // Screen settings
-  s_settings.screen.width = GetSetting<unsigned int>("screen", "width");
+  s_settings.screen.width  = GetSetting<unsigned int>("screen", "width");
   s_settings.screen.height = GetSetting<unsigned int>("screen", "height");
 
   s_loaded = true;
+}
+
+static void ReloadSettings() {
+  s_loaded = false;
+  LoadSettings();
 }
 
 const Settings& GetSettings() {

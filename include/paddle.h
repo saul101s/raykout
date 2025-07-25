@@ -1,6 +1,7 @@
 #pragma once
 
 #include "transform2d.h"
+#include "physics.h"
 
 namespace Raykout {
 class Paddle {
@@ -20,6 +21,17 @@ class Paddle {
   Paddle(const Paddle& o)            = default;
   Paddle& operator=(const Paddle& o) = default;
 
+  Vector2 velocity() const { return velocity_; }
+
+  AABB aabb() const {
+    float half_width  = scaledWidth() / 2.0f;
+    float half_height = scaledHeight() / 2.0f;
+
+    return AABB{
+        Vector2{transform.position.x - half_width, transform.position.y - half_height},
+        Vector2{transform.position.x + half_width, transform.position.y + half_height}};
+  }
+
   void update(float dt);
   void draw() const;
 
@@ -30,9 +42,7 @@ class Paddle {
   float scaledHeight() const;
 
  private:
+  Config config_;
   Vector2 velocity_;
-  float max_speed_;
-  float acceleration_;
-  float damping_;
 };
 }  // namespace Raykout

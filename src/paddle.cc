@@ -4,12 +4,12 @@
 
 #include "raylib.h"
 
-constexpr int WIDTH  = 60;
-constexpr int HEIGHT = 10;
+constexpr float WIDTH  = 100.0f;
+constexpr float HEIGHT = 10.0f;
 
 namespace Raykout {
 Paddle::Paddle(const Config& config)
-    : max_speed_(config.max_speed), acceleration_(config.acceleration), damping_(config.damping) {}
+    : config_(config) {}
 
 void Paddle::update(float dt) {
   handleInput(dt);
@@ -17,9 +17,11 @@ void Paddle::update(float dt) {
 }
 
 void Paddle::draw() const {
-  int x = (int)transform.position.x;
-  int y = (int)transform.position.y;
-  DrawRectangle(x, y, (int)scaledWidth(), (int)scaledHeight(), WHITE);
+  int x      = (int)transform.position.x;
+  int y      = (int)transform.position.y;
+  int width  = (int)scaledWidth();
+  int height = (int)scaledHeight();
+  DrawRectangle(x - width / 2, y - height / 2, width, height, WHITE);
 }
 
 void Paddle::handleInput(float dt) {
@@ -28,22 +30,22 @@ void Paddle::handleInput(float dt) {
   accelerating = false;
 
   if (IsKeyDown('D')) {
-    velocity_.x += acceleration_ * dt;
+    velocity_.x += config_.acceleration * dt;
     accelerating = true;
   }
 
   if (IsKeyDown('A')) {
-    velocity_.x -= acceleration_ * dt;
+    velocity_.x -= config_.acceleration * dt;
     accelerating = true;
   }
 
-  if (velocity_.length() > max_speed_) {
-    velocity_.setLength(max_speed_);
+  if (velocity_.length() > config_.max_speed) {
+    velocity_.setLength(config_.max_speed);
   }
 
   if (!accelerating) {
     float speed = velocity_.length();
-    speed *= std::powf(damping_, dt);
+    speed *= std::powf(config_.damping, dt);
     velocity_.setLength(speed);
   }
 }
@@ -51,13 +53,13 @@ void Paddle::handleInput(float dt) {
 void Paddle::updatePosition(float dt) {
   transform.position += velocity_ * dt;
 
-  if (velocity_.x > 0 && transform.position.x + scaledWidth() > (float)GetScreenWidth()) {
-    transform.position.x = (float)GetScreenWidth() - scaledWidth();
+  if (velocity_.x > 0 && transform.position.x + scaledWidth() / 2.0f > (float)GetScreenWidth()) {
+    transform.position.x = (float)GetScreenWidth() - scaledWidth() / 2.0f;
     velocity_.x          = 0.0f;
   }
 
-  if (velocity_.x < 0 && transform.position.x < 0) {
-    transform.position.x = 0;
+  if (velocity_.x < 0 && transform.position.x - scaledWidth() / 2.0f < 0) {
+    transform.position.x = scaledWidth() / 2.0f;
     velocity_.x          = 0.0f;
   }
 }
