@@ -4,12 +4,12 @@
 
 #include "raylib.h"
 
-constexpr float WIDTH  = 100.0f;
-constexpr float HEIGHT = 10.0f;
+constexpr float WIDTH  = 2.0f;
+constexpr float HEIGHT = 0.25f;
 
 namespace Raykout {
-Paddle::Paddle(const Config& config)
-    : config_(config) {}
+Paddle::Paddle(const Config& config, const AABB& bounds)
+    : config_(config), bounds_(bounds) {}
 
 void Paddle::update(float dt) {
   handleInput(dt);
@@ -53,13 +53,13 @@ void Paddle::handleInput(float dt) {
 void Paddle::updatePosition(float dt) {
   transform.position += velocity_ * dt;
 
-  if (velocity_.x > 0 && transform.position.x + scaledWidth() / 2.0f > (float)GetScreenWidth()) {
-    transform.position.x = (float)GetScreenWidth() - scaledWidth() / 2.0f;
+  if (velocity_.x > 0 && transform.position.x + scaledWidth() / 2.0f > bounds_.max.x) {
+    transform.position.x = bounds_.max.x - scaledWidth() / 2.0f;
     velocity_.x          = 0.0f;
   }
 
-  if (velocity_.x < 0 && transform.position.x - scaledWidth() / 2.0f < 0) {
-    transform.position.x = scaledWidth() / 2.0f;
+  if (velocity_.x < 0 && transform.position.x - scaledWidth() / 2.0f < bounds_.min.x) {
+    transform.position.x = bounds_.min.x + scaledWidth() / 2.0f;
     velocity_.x          = 0.0f;
   }
 }

@@ -21,8 +21,13 @@ struct ScreenSettings {
   unsigned int height;
 };
 
+struct WorldSettings {
+  float height;
+};
+
 struct Settings {
   ScreenSettings screen;
+  WorldSettings world;
   PaddleSettings paddle;
   BallSettings ball;
 
@@ -30,6 +35,7 @@ struct Settings {
     // Default values
     screen.width        = 1200;
     screen.height       = 800;
+    world.height        = 22;
     paddle.max_speed    = 500.0f;
     paddle.acceleration = 3000.0f;
     paddle.damping      = 0.01f;
@@ -66,6 +72,9 @@ static void LoadSettings() {
   // Screen settings
   s_settings.screen.width  = GetSetting<unsigned int>("screen", "width");
   s_settings.screen.height = GetSetting<unsigned int>("screen", "height");
+
+  // World settings
+  s_settings.world.height = GetSetting<float>("world", "height");
 
   s_loaded = true;
 }

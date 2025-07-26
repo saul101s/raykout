@@ -1,6 +1,7 @@
 #pragma once
 
 #include "transform2d.h"
+#include "renderer.h"
 #include "physics.h"
 
 namespace Raykout {
@@ -14,7 +15,7 @@ class Ball {
   Transform2d transform;
 
  public:
-  Ball(const Config& config) : config_(config) {}
+  Ball(const Config& config, const AABB& bounds);
   Ball()                         = delete;
   ~Ball()                        = default;
   Ball(const Ball& o)            = default;
@@ -22,9 +23,10 @@ class Ball {
 
   void update(float dt);
   void draw() const;
+  Vector2 velocity() const { return velocity_; }
   void onCollision(Vector2 hit_normal);
 
-  Vector2 velocity() const { return velocity_; }
+  Renderer::PriCircle primitive() const { return {transform.position.x, transform.position.y, config_.radius}; }
 
   AABB aabb() const {
     float half_radius = config_.radius / 2.0f;
@@ -37,5 +39,6 @@ class Ball {
  private:
   Config config_;
   Vector2 velocity_;
+  AABB bounds_;
 };
 }  // namespace Raykout

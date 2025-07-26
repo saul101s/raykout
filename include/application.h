@@ -4,6 +4,7 @@
 
 #include "paddle.h"
 #include "ball.h"
+#include "renderer.h"
 
 namespace Raykout {
 class Application {
@@ -20,11 +21,14 @@ class Application {
   void loop();
   void update(float dt);
   void solveCollisions(float dt);
+  void updateViewport();
   void draw();
   void reload();
 
  private:
   std::unique_ptr<Paddle> paddle;
   std::unique_ptr<Ball> ball;
+  Renderer::Viewport viewport_;
+  float aspect_;
 };
 }  // namespace Raykout
