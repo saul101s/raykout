@@ -1,13 +1,18 @@
 #pragma once
 
+#include <memory>
+
 #include "transform2d.h"
 #include "renderer.h"
 #include "physics.h"
+#include "ball.h"
 
 namespace Raykout {
 class Paddle {
  public:
   struct Config {
+    float width;
+    float height;
     float max_speed;
     float acceleration;
     float damping;
@@ -36,8 +41,16 @@ class Paddle {
   }
 
   void update(float dt);
-  void draw() const;
-  Vector2 velocity() const { return velocity_; }
+  void attachBall(std::shared_ptr<Ball> ball);
+
+  void setVelocity(Vector2 velocity) {
+    velocity_ = velocity;
+    if (velocity_.lengthSqr() > config_.max_speed * config_.max_speed)
+      velocity_.setLength(config_.max_speed);
+  }
+  Vector2 velocity() const {
+    return velocity_;
+  }
 
  private:
   void handleInput(float dt);
@@ -49,5 +62,6 @@ class Paddle {
   Config config_;
   Vector2 velocity_;
   AABB bounds_;
+  std::shared_ptr<Ball> ball_;
 };
 }  // namespace Raykout

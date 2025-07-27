@@ -22,18 +22,26 @@ class Ball {
   Ball& operator=(const Ball& o) = default;
 
   void update(float dt);
-  void draw() const;
-  Vector2 velocity() const { return velocity_; }
+
+  float radius() const { return config_.radius; }
+  void launch(Vector2 direction);
   void onCollision(Vector2 hit_normal);
+
+  void setVelocity(Vector2 velocity) {
+    velocity_ = velocity;
+    if (velocity_.lengthSqr() > config_.max_speed * config_.max_speed)
+      velocity_.setLength(config_.max_speed);
+  }
+  Vector2 velocity() const {
+    return velocity_;
+  }
 
   Renderer::PriCircle primitive() const { return {transform.position.x, transform.position.y, config_.radius}; }
 
   AABB aabb() const {
-    float half_radius = config_.radius / 2.0f;
-
     return AABB{
-        Vector2{transform.position.x - half_radius, transform.position.y - half_radius},
-        Vector2{transform.position.x + half_radius, transform.position.y + half_radius}};
+        Vector2{transform.position.x - config_.radius, transform.position.y - config_.radius},
+        Vector2{transform.position.x + config_.radius, transform.position.y + config_.radius}};
   }
 
  private:

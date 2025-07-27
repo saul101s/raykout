@@ -7,14 +7,6 @@ Ball::Ball(const Config& config, const AABB& bounds)
     : config_(config), bounds_(bounds) {}
 
 void Ball::update(float dt) {
-  if (velocity_.isZeroLength()) {
-    velocity_ = Vector2{1.0f, -1.0f}.normalized() * config_.max_speed;
-  }
-
-  if (IsKeyPressed(KEY_W)) {
-    transform.position.y -= 1.0f;
-  }
-
   transform.position += velocity_ * dt;
   Vector2 hit_normal;
 
@@ -36,11 +28,10 @@ void Ball::update(float dt) {
     velocity_ = velocity_.reflected(hit_normal);
 }
 
-void Ball::draw() const {
-  int x = (int)transform.position.x;
-  int y = (int)transform.position.y;
-
-  DrawCircle(x, y, config_.radius, WHITE);
+void Ball::launch(Vector2 direction) {
+  if (velocity_.isZeroLength()) {
+    velocity_ = direction.normalized() * config_.max_speed;
+  }
 }
 
 void Ball::onCollision(Vector2 hit_normal) {

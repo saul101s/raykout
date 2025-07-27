@@ -38,14 +38,15 @@ void Application::initialize() {
   AABB bounds{{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
 
   // Initialize the paddle
-  Raykout::Paddle::Config paddle_config{settings.paddle.max_speed, settings.paddle.acceleration, settings.paddle.damping};
+  Raykout::Paddle::Config paddle_config{settings.paddle.width, settings.paddle.height, settings.paddle.max_speed, settings.paddle.acceleration, settings.paddle.damping};
   paddle                     = std::make_unique<Paddle>(paddle_config, bounds);
   paddle->transform.position = Vector2{0.0f, -world_height / 2.0f + 1.0f};
 
   // Initialize the ball
   Raykout::Ball::Config ball_config{settings.ball.max_speed, settings.ball.radius};
-  ball                     = std::make_unique<Ball>(ball_config, bounds);
-  ball->transform.position = Vector2{0.0f, -world_height / 2.0f + 2.0f};
+  ball                     = std::make_shared<Ball>(ball_config, bounds);
+  ball->transform.position = paddle->transform.position + Vector2{0.0f, settings.paddle.height / 2.0f + settings.ball.radius};
+  paddle->attachBall(ball);
 }
 
 void Application::loop() {
@@ -77,7 +78,6 @@ void Application::solveCollisions(float dt) {
 
   bool test = Raykout::TestMovingAABBAABB(a, b, paddle->velocity(), ball->velocity(), tfirst, tlast, normal);
   if (test && tfirst < dt && normal.y * normal.y > 0.0f) {
-    ball->transform.position += ball->velocity() * tfirst * 2;  // Move the ball passed the collision to pay for extra dt on update.
     float t              = (ball->transform.position.x - a.min.x) / (a.max.x - a.min.x);
     Vector2 push_towards = Vector2{2.0f * t - 1.0f, 1.0f}.normalized();
     Vector2 inv_velocity = -ball->velocity().normalized();
@@ -106,27 +106,24 @@ void Application::updateViewport() {
 void Application::draw() {
   const Raykout::Settings& settings = Raykout::GetSettings();
 
-  static char welcome_text[]        = "Welcome to Raykout";
-  static int welcome_text_font_size = 20;
+  static char welcome_text[] = "Welcome to Raykout";
+  static int font_size_m     = 20;
 
   // Setup frame buffer
   BeginDrawing();
 
   ClearBackground(BLACK);
 
+  // Viewport
   DrawRectangle(viewport_.x - viewport_.width / 2, viewport_.y - viewport_.height / 2, viewport_.width, viewport_.height, DARKGRAY);
+  DrawFPS(viewport_.x + viewport_.width / 2 - 100, viewport_.y - viewport_.height / 2 + font_size_m / 2);
 
-  DrawFPS(viewport_.x, 20);
+  int text_x = viewport_.x - MeasureText(welcome_text, font_size_m) / 2;
+  int text_y = viewport_.y - viewport_.height / 2 + font_size_m / 2;
+  DrawText(welcome_text, text_x, text_y, font_size_m, WHITE);
 
-  int welcome_text_width = MeasureText(welcome_text, welcome_text_font_size);
-  int text_x             = viewport_.x - welcome_text_width / 2;
-  int text_y             = viewport_.y - welcome_text_font_size / 2;
-  DrawText(welcome_text, text_x, text_y, welcome_text_font_size, WHITE);
-
-  paddle->draw();
-  // ball->draw();
   Raykout::Renderer::DrawRectangle(paddle->primitive(), WHITE);
-  Raykout::Renderer::DrawCircle(ball->primitive(), WHITE);
+  Raykout::Renderer::DrawCircle(ball->primitive(), BEIGE);
 
   // Swap buffers
   EndDrawing();

@@ -27,7 +27,7 @@ void DrawRectangle(const PriRectangle& rect, const Color& color) {
   Vector2 relative_pos = WorldToScreen(Vector2{rect.x, rect.y});
   Vector2 world_size   = WorldToScreen(Vector2{rect.width, rect.height});
   float x              = s_viewport.x + relative_pos.x - world_size.x / 2.0f;
-  float y              = s_viewport.y - relative_pos.y - world_size.y / 2.0f;
+  float y              = s_viewport.y - relative_pos.y - world_size.y / 2.0f;  // Inverted axis
   DrawRectangle((int)x, (int)y, (int)world_size.x, (int)world_size.y, color);
 }
 
@@ -35,7 +35,7 @@ void DrawCircle(const PriCircle& circle, const Color& color) {
   Vector2 relative_pos = WorldToScreen(Vector2{circle.x, circle.y});
   Vector2 world_size   = WorldToScreen(Vector2{circle.radius, circle.radius});
   float x              = s_viewport.x + relative_pos.x;
-  float y              = s_viewport.y - relative_pos.y;
+  float y              = s_viewport.y - relative_pos.y;  // Inverted axis
   DrawCircle((int)x, (int)y, world_size.x, color);
 }
 

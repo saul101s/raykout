@@ -6,6 +6,8 @@ namespace Raykout {
 static const char* SETTINGS_PATH = "assets/settings/settings.ini";
 
 struct PaddleSettings {
+  float width;
+  float height;
   float max_speed;
   float acceleration;
   float damping;
@@ -36,6 +38,8 @@ struct Settings {
     screen.width        = 1200;
     screen.height       = 800;
     world.height        = 22;
+    paddle.width        = 2.0f;
+    paddle.height       = 0.25f;
     paddle.max_speed    = 500.0f;
     paddle.acceleration = 3000.0f;
     paddle.damping      = 0.01f;
@@ -61,6 +65,8 @@ static void LoadSettings() {
   s_ini_file.load(SETTINGS_PATH);
 
   // Paddle settings
+  s_settings.paddle.width        = GetSetting<float>("paddle", "width");
+  s_settings.paddle.height       = GetSetting<float>("paddle", "height");
   s_settings.paddle.max_speed    = GetSetting<float>("paddle", "max_speed");
   s_settings.paddle.acceleration = GetSetting<float>("paddle", "acceleration");
   s_settings.paddle.damping      = GetSetting<float>("paddle", "damping");

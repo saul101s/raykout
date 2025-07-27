@@ -27,7 +27,7 @@ class Application {
 
  private:
   std::unique_ptr<Paddle> paddle;
-  std::unique_ptr<Ball> ball;
+  std::shared_ptr<Ball> ball;
   Renderer::Viewport viewport_;
   float aspect_;
 };

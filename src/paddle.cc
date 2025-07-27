@@ -4,9 +4,6 @@
 
 #include "raylib.h"
 
-constexpr float WIDTH  = 2.0f;
-constexpr float HEIGHT = 0.25f;
-
 namespace Raykout {
 Paddle::Paddle(const Config& config, const AABB& bounds)
     : config_(config), bounds_(bounds) {}
@@ -16,12 +13,9 @@ void Paddle::update(float dt) {
   updatePosition(dt);
 }
 
-void Paddle::draw() const {
-  int x      = (int)transform.position.x;
-  int y      = (int)transform.position.y;
-  int width  = (int)scaledWidth();
-  int height = (int)scaledHeight();
-  DrawRectangle(x - width / 2, y - height / 2, width, height, WHITE);
+void Paddle::attachBall(std::shared_ptr<Ball> ball) {
+  ball_ = ball;
+  ball_->setVelocity({0.0f, 0.0f});
 }
 
 void Paddle::handleInput(float dt) {
@@ -29,14 +23,19 @@ void Paddle::handleInput(float dt) {
 
   accelerating = false;
 
-  if (IsKeyDown('D')) {
+  if (IsKeyDown(KEY_D)) {
     velocity_.x += config_.acceleration * dt;
     accelerating = true;
   }
 
-  if (IsKeyDown('A')) {
+  if (IsKeyDown(KEY_A)) {
     velocity_.x -= config_.acceleration * dt;
     accelerating = true;
+  }
+
+  if (IsKeyDown(KEY_SPACE) && ball_.get()) {
+    ball_->launch(velocity_ / config_.max_speed + Vector2{0.0f, 1.0f});
+    ball_ = nullptr;
   }
 
   if (velocity_.length() > config_.max_speed) {
@@ -51,6 +50,7 @@ void Paddle::handleInput(float dt) {
 }
 
 void Paddle::updatePosition(float dt) {
+  Vector2 prev_pos = transform.position;
   transform.position += velocity_ * dt;
 
   if (velocity_.x > 0 && transform.position.x + scaledWidth() / 2.0f > bounds_.max.x) {
@@ -62,13 +62,16 @@ void Paddle::updatePosition(float dt) {
     transform.position.x = bounds_.min.x + scaledWidth() / 2.0f;
     velocity_.x          = 0.0f;
   }
+
+  if (ball_.get())
+    ball_->transform.position.x += (transform.position.x - prev_pos.x);
 }
 
 float Paddle::scaledWidth() const {
-  return (float)WIDTH * transform.scale.x;
+  return config_.width * transform.scale.x;
 }
 
 float Paddle::scaledHeight() const {
-  return (float)HEIGHT * transform.scale.y;
+  return config_.height * transform.scale.y;
 }
 }  // namespace Raykout
