@@ -42,7 +42,7 @@ void Application::initialize() {
   paddle->transform.position = Vector2{0.0f, -world_height / 2.0f + 1.0f};
 
   // Initialize the ball
-  Raykout::Ball::Config ball_config{settings.ball.max_speed, settings.ball.radius};
+  Raykout::Ball::Config ball_config{settings.ball.launch_speed, settings.ball.max_speed, settings.ball.radius};
   ball                     = std::make_shared<Ball>(ball_config, bounds);
   ball->transform.position = paddle->transform.position + Vector2{0.0f, settings.paddle.height / 2.0f + settings.ball.radius};
   paddle->attachBall(ball);
@@ -94,7 +94,7 @@ void Application::solveCollisionBallPaddle(float dt) {
     float t              = (ball->transform.position.x - a.min.x) / (a.max.x - a.min.x);
     Vector2 push_towards = Vector2{2.0f * t - 1.0f, 1.0f}.normalized();
     Vector2 inv_velocity = -ball->velocity().normalized();
-    ball->onCollision(push_towards.halfWay(inv_velocity).normalized());
+    ball->onCollision(push_towards.halfWay(inv_velocity).normalized(), "paddle");
   }
 }
 
@@ -106,8 +106,9 @@ void Application::solveCollisionsBallBricks(float dt) {
     if (!brick->enabled()) continue;
     bool test = Raykout::TestMovingAABBAABB(brick->aabb(), ball->aabb(), Vector2(), ball->velocity(), tfirst, tlast, normal);
     if (test && tfirst < dt) {
-      ball->onCollision(normal);
+      ball->onCollision(normal, "brick");
       brick->damage(1);
+      break;
     }
   }
 }

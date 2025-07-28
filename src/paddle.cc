@@ -24,11 +24,13 @@ void Paddle::handleInput(float dt) {
   accelerating = false;
 
   if (IsKeyDown(KEY_D)) {
+    if (velocity_.x < 0.0f) velocity_.x = 0.0f;
     velocity_.x += config_.acceleration * dt;
     accelerating = true;
   }
 
   if (IsKeyDown(KEY_A)) {
+    if (velocity_.x > 0.0f) velocity_.x = 0.0f;
     velocity_.x -= config_.acceleration * dt;
     accelerating = true;
   }

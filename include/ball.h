@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "transform2d.h"
 #include "renderer.h"
 #include "physics.h"
@@ -8,6 +10,7 @@ namespace Raykout {
 class Ball {
  public:
   struct Config {
+    float launch_speed;
     float max_speed;
     float radius;
   };
@@ -25,7 +28,7 @@ class Ball {
 
   float radius() const { return config_.radius; }
   void launch(Vector2 direction);
-  void onCollision(Vector2 hit_normal);
+  void onCollision(Vector2 hit_normal, const std::string& tag);
 
   void setVelocity(Vector2 velocity) {
     velocity_ = velocity;

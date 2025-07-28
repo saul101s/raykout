@@ -21,6 +21,13 @@ struct Vector2 {
   Vector2(const Vector2& o)            = default;
   Vector2& operator=(const Vector2& o) = default;
 
+  static Vector2 Zero() { return {0.0f, 0.0f}; }
+  static Vector2 One() { return {1.0f, 1.0f}; }
+  static Vector2 Up() { return {0.0f, 1.0f}; }
+  static Vector2 Down() { return {0.0f, -1.0f}; }
+  static Vector2 Left() { return {-1.0f, 0.0f}; }
+  static Vector2 Right() { return {1.0f, 0.0f}; }
+
   float lengthSqr() const { return x * x + y * y; }
   float length() const { return std::sqrt(lengthSqr()); }
   bool isZeroLength() const { return lengthSqr() < ZERO_EPSILON; }
