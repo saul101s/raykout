@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-
 #include "vector2.h"
 
 namespace Raykout {

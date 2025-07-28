@@ -1,6 +1,5 @@
 #include "physics.h"
 
-#include <stdio.h>
 #include <algorithm>
 
 namespace Raykout {

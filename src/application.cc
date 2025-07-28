@@ -36,7 +36,6 @@ void Application::initialize() {
   float half_world_width  = world_width / 2.0f;
   float half_world_height = world_height / 2.0f;
   AABB bounds{{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
-
   // Initialize the paddle
   Raykout::Paddle::Config paddle_config{settings.paddle.width, settings.paddle.height, settings.paddle.max_speed, settings.paddle.acceleration, settings.paddle.damping};
   paddle                     = std::make_unique<Paddle>(paddle_config, bounds);
@@ -47,6 +46,15 @@ void Application::initialize() {
   ball                     = std::make_shared<Ball>(ball_config, bounds);
   ball->transform.position = paddle->transform.position + Vector2{0.0f, settings.paddle.height / 2.0f + settings.ball.radius};
   paddle->attachBall(ball);
+
+  // Initialize bricks
+  bricks.reserve(100);
+  Raykout::Brick::Config brick_config{1.5f, 0.5f};
+  for (int y = -5; y < 5; y++)
+    for (int x = -5; x < 5; x++) {
+      bricks.push_back(std::make_shared<Brick>(brick_config));
+      bricks.back()->transform.position = {(float)x * 2.0f, float(y)};
+    }
 }
 
 void Application::loop() {
@@ -71,6 +79,11 @@ void Application::update(float dt) {
 }
 
 void Application::solveCollisions(float dt) {
+  solveCollisionBallPaddle(dt);
+  solveCollisionsBallBricks(dt);
+}
+
+void Application::solveCollisionBallPaddle(float dt) {
   AABB a = paddle->aabb();
   AABB b = ball->aabb();
   float tfirst, tlast;
@@ -82,6 +95,20 @@ void Application::solveCollisions(float dt) {
     Vector2 push_towards = Vector2{2.0f * t - 1.0f, 1.0f}.normalized();
     Vector2 inv_velocity = -ball->velocity().normalized();
     ball->onCollision(push_towards.halfWay(inv_velocity).normalized());
+  }
+}
+
+void Application::solveCollisionsBallBricks(float dt) {
+  float tfirst, tlast;
+  Vector2 normal;
+
+  for (auto brick : bricks) {
+    if (!brick->enabled()) continue;
+    bool test = Raykout::TestMovingAABBAABB(brick->aabb(), ball->aabb(), Vector2(), ball->velocity(), tfirst, tlast, normal);
+    if (test && tfirst < dt) {
+      ball->onCollision(normal);
+      brick->damage(1);
+    }
   }
 }
 
@@ -115,7 +142,7 @@ void Application::draw() {
   ClearBackground(BLACK);
 
   // Viewport
-  DrawRectangle(viewport_.x - viewport_.width / 2, viewport_.y - viewport_.height / 2, viewport_.width, viewport_.height, DARKGRAY);
+  DrawRectangle(viewport_.x - viewport_.width / 2, viewport_.y - viewport_.height / 2, viewport_.width, viewport_.height, Color{20, 20, 20, 255});
   DrawFPS(viewport_.x + viewport_.width / 2 - 100, viewport_.y - viewport_.height / 2 + font_size_m / 2);
 
   int text_x = viewport_.x - MeasureText(welcome_text, font_size_m) / 2;
@@ -124,6 +151,10 @@ void Application::draw() {
 
   Raykout::Renderer::DrawRectangle(paddle->primitive(), WHITE);
   Raykout::Renderer::DrawCircle(ball->primitive(), BEIGE);
+  for (auto brick : bricks) {
+    if (brick->enabled())
+      Raykout::Renderer::DrawRectangle(brick->primitive(), DARKGREEN);
+  }
 
   // Swap buffers
   EndDrawing();

@@ -1,3 +1,5 @@
+require "export-compile-commands"
+
 workspace "Raykout"
   location(path.join(path.getdirectory(_SCRIPT), "build"))
   startproject "Raykout"
