@@ -21,7 +21,10 @@ class Brick {
   Brick(const Brick& o)            = default;
   Brick& operator=(const Brick& o) = default;
 
-  void damage(int hp);
+  void damage(unsigned int hp);
+
+  float scaledWidth() const { return config_.width * transform.scale.x; }
+  float scaledHeight() const { return config_.height * transform.scale.y; }
 
   Renderer::PriRectangle primitive() const {
     return {transform.position.x, transform.position.y, scaledWidth(), scaledHeight()};
@@ -37,10 +40,6 @@ class Brick {
   }
 
   bool enabled() const { return hp_ > 0; }
-
- private:
-  float scaledWidth() const;
-  float scaledHeight() const;
 
  private:
   Config config_;

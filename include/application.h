@@ -1,20 +1,21 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
-#include "paddle.h"
-#include "ball.h"
-#include "brick.h"
+#include "scene.h"
+#include "main_menu.h"
 #include "renderer.h"
 
 namespace Raykout {
 class Application {
  public:
-  Application()                                = default;
-  ~Application()                               = default;
-  Application(const Application& o)            = default;
-  Application& operator=(const Application& o) = default;
+  enum State {
+    kState_MainMenu = 0,
+    kState_Game,
+    kState_GameOver,
+    kState_Quit
+  };
+
+  Application()  = default;
+  ~Application() = default;
 
   void run();
 
@@ -22,17 +23,15 @@ class Application {
   void initialize();
   void loop();
   void update(float dt);
-  void solveCollisions(float dt);
-  void solveCollisionBallPaddle(float dt);
-  void solveCollisionsBallBricks(float dt);
   void updateViewport();
   void draw();
   void reload();
 
  private:
-  std::unique_ptr<Paddle> paddle;
-  std::shared_ptr<Ball> ball;
-  std::vector<std::shared_ptr<Brick>> bricks;
+  Scene scene_;
+  MainMenu main_menu_;
+  State state_;
+
   Renderer::Viewport viewport_;
   float aspect_;
 };

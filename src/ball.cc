@@ -48,7 +48,5 @@ void Ball::onCollision(Vector2 hit_normal, const std::string& tag) {
   if (s + sd > config_.max_speed) sd = config_.max_speed - s;
   if (s + sd < config_.launch_speed) sd = config_.launch_speed - s;
   velocity_.setLength(s + sd);
-
-  printf("t: %.2f - sd: %.2f\n", t, sd);
 }
 }  // namespace Raykout

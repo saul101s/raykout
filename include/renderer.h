@@ -1,6 +1,7 @@
 #pragma once
 
-#include "raylib.h"
+#include "rcolor.h"
+#include "vector2.h"
 
 namespace Raykout {
 
@@ -18,9 +19,22 @@ struct PriCircle {
   float x, y, radius;
 };
 
+struct PriText {
+  const char* text;
+  float x, y, font_size;
+};
+
 void SetViewport(const Viewport& viewport);
 void SetWorldSize(float width, float height);
-void DrawRectangle(const PriRectangle& rect, const Color& color);
-void DrawCircle(const PriCircle& circle, const Color& color);
+
+
+float WorldToScreen(float v);
+Vector2 WorldToScreen(Raykout::Vector2 v);
+float ScreenToWorld(float v);
+Vector2 ScreenToWorld(Raykout::Vector2 v);
+
+void DrawRectangle(const PriRectangle& rect, const RColor& color);
+void DrawCircle(const PriCircle& circle, const RColor& color);
+void DrawText(const PriText& text, const RColor& color);
 }  // namespace Renderer
 }  // namespace Raykout

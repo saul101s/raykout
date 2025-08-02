@@ -35,7 +35,7 @@ void Paddle::handleInput(float dt) {
     accelerating = true;
   }
 
-  if (IsKeyDown(KEY_SPACE) && ball_.get()) {
+  if (IsKeyPressed(KEY_SPACE) && ball_.get()) {
     ball_->launch(velocity_ / config_.max_speed + Vector2{0.0f, 1.0f});
     ball_ = nullptr;
   }
