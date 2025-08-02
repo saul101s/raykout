@@ -10,5 +10,6 @@ struct RColor {
   static RColor DarkGray() { return {20, 20, 20, 255}; }
   static RColor Green() { return {0, 255, 0, 255}; }
   static RColor DarkGreen() { return {10, 200, 10, 255}; }
+  static RColor DarkRed() { return {150, 30, 30, 255}; }
 };
 }  // namespace Raykout

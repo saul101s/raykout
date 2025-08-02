@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cmath>
 
 static constexpr float ZERO_EPSILON = 1e-4f;
@@ -52,6 +53,7 @@ struct Vector2 {
 
   Vector2 projected(const Vector2& q) const {
     // projqP = ((P * Q) / ||Q||^2) * Q
+    assert(!q.isZeroLength());
     return q * ((*this * q) / (q * q));
   }
 

@@ -26,6 +26,7 @@ struct PriText {
 
 void SetViewport(const Viewport& viewport);
 void SetWorldSize(float width, float height);
+Vector2 GetWorldSize();
 
 
 float WorldToScreen(float v);

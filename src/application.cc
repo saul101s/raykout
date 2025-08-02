@@ -3,6 +3,7 @@
 #include "main_menu.h"
 #include "raylib.h"
 #include "physics.h"
+#include "renderer.h"
 #include "settings.h"
 
 const char* ICON_PATH = "assets/icon.png";
@@ -17,9 +18,9 @@ void Application::run() {
 void Application::initialize() {
   const Raykout::Settings& settings = Raykout::GetSettings();
 
-  aspect_            = (float)settings.screen.width / (float)settings.screen.height;
+  float world_width  = settings.world.width;
   float world_height = settings.world.height;
-  float world_width  = world_height * aspect_;
+  aspect_ = world_width / world_height;
   Raykout::Renderer::SetWorldSize(world_width, world_height);
 
   // Set vsync and work with high DPI displays.
@@ -34,11 +35,6 @@ void Application::initialize() {
 
   updateViewport();
 
-  float half_world_width  = world_width / 2.0f;
-  float half_world_height = world_height / 2.0f;
-  AABB bounds{{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
-
-  scene_.load(bounds);
   state_ = kState_MainMenu;
 }
 
@@ -62,6 +58,7 @@ void Application::update(float dt) {
     case kState_MainMenu: {
       main_menu_.update(dt);
       if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Play)) {
+        scene_.load(worldBounds());
         state_ = kState_Game;
       }
       if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Quit)) {
@@ -70,10 +67,22 @@ void Application::update(float dt) {
     } break;
     case kState_Game: {
       scene_.update(dt);
+      if (scene_.ballsRemaining() == 0) {
+        state_ = kState_GameOver;
+      }
     } break;
     case kState_GameOver: {
+      game_over_.update(dt);
+      if (game_over_.isButtonPressed(GameOver::kGameOverButton_Retry)) {
+        scene_.load(worldBounds());
+        state_ = kState_Game;
+      }
+      if (game_over_.isButtonPressed(GameOver::kGameOverButton_Menu)) {
+        state_ = kState_MainMenu;
+      }
     } break;
-    case kState_Quit: {} break;
+    case kState_Quit: {
+    } break;
   }
 }
 
@@ -98,9 +107,6 @@ void Application::updateViewport() {
 void Application::draw() {
   const Raykout::Settings& settings = Raykout::GetSettings();
 
-  static char welcome_text[] = "Welcome to Raykout";
-  static int font_size_m     = 20;
-
   // Setup frame buffer
   BeginDrawing();
 
@@ -108,11 +114,7 @@ void Application::draw() {
 
   // Viewport
   DrawRectangle(viewport_.x - viewport_.width / 2, viewport_.y - viewport_.height / 2, viewport_.width, viewport_.height, {20, 20, 20, 255});
-  DrawFPS(viewport_.x + viewport_.width / 2 - 100, viewport_.y - viewport_.height / 2 + font_size_m / 2);
-
-  int text_x = viewport_.x - MeasureText(welcome_text, font_size_m) / 2;
-  int text_y = viewport_.y - viewport_.height / 2 + font_size_m / 2;
-  DrawText(welcome_text, text_x, text_y, font_size_m, {255, 255, 255, 255});
+  DrawFPS(viewport_.x + viewport_.width / 2 - 100, viewport_.y - viewport_.height / 2 + 10);
 
   switch (state_) {
     case kState_MainMenu: {
@@ -122,6 +124,7 @@ void Application::draw() {
       scene_.draw();
     } break;
     case kState_GameOver: {
+      game_over_.draw();
     } break;
   }
 
@@ -133,5 +136,12 @@ void Application::reload() {
   CloseWindow();
   Raykout::ReloadSettings();
   initialize();
+}
+
+AABB Application::worldBounds() const {
+  Vector2 world_size      = Raykout::Renderer::GetWorldSize();
+  float half_world_width  = world_size.x / 2.0f;
+  float half_world_height = world_size.y / 2.0f;
+  return {{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
 }
 }  // namespace Raykout

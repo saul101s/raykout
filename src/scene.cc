@@ -6,12 +6,15 @@ namespace Raykout {
 
 void Scene::load(AABB bounds) {
   // TODO(saul): Load objects from file
+  paddle_.reset();
+  ball_.reset();
+  bricks_.clear();
 
   const Raykout::Settings& settings = Raykout::GetSettings();
 
   // Initialize the paddle
   Raykout::Paddle::Config paddle_config{settings.paddle.width, settings.paddle.height, settings.paddle.max_speed, settings.paddle.acceleration, settings.paddle.damping};
-  paddle_                    = std::make_shared<Paddle>(paddle_config, bounds);
+  paddle_                     = std::make_shared<Paddle>(paddle_config, bounds);
   paddle_->transform.position = Vector2{0.0f, bounds.min.y + 1.0f};
 
   // Initialize the ball
@@ -22,17 +25,22 @@ void Scene::load(AABB bounds) {
 
   // Initialize bricks
   bricks_.reserve(100);
-  Raykout::Brick::Config brick_config{1.5f, 0.5f};
-  for (int y = -5; y < 5; y++)
-    for (int x = -5; x < 5; x++) {
+  Raykout::Brick::Config brick_config{2.0f, 0.75f};
+  float xoffset = brick_config.width - 0.05f;
+  float yoffset = brick_config.height - 0.05f;
+  for (int y = 0; y <= 5; y++)
+    for (int x = -5; x <= 5; x++) {
       bricks_.push_back(brick_config);
-      bricks_.back().transform.position = {(float)x * 2.0f, float(y)};
+      bricks_.back().transform.position = {(float)x * xoffset, float(y) * yoffset};
     }
 }
 
 void Scene::update(float dt) {
   solveCollisions(dt);
   ball_->update(dt);
+  if (!ball_->enabled()) {
+    ball_.reset();
+  }
   paddle_->update(dt);
 }
 
@@ -61,11 +69,13 @@ void Scene::solveCollisionsBallBricks(float dt) {
   Vector2 normal;
 
   for (auto& brick : bricks_) {
-    if (!brick.enabled())  continue;
+    if (!brick.enabled()) continue;
     bool test = Raykout::TestMovingAABBAABB(brick.aabb(), ball_->aabb(), Vector2(), ball_->velocity(), tfirst, tlast, normal);
     if (test && tfirst < dt) {
-      ball_->onCollision(normal, "brick");
+      ball_->onCollision(normal, "breck");
       brick.damage(1);
+      AABB aabb = ball_->aabb();
+      Vector2 vel = ball_->velocity();
       break;
     }
   }
@@ -79,5 +89,4 @@ void Scene::draw() {
       Raykout::Renderer::DrawRectangle(brick.primitive(), RColor::DarkGreen());
   }
 }
-
 }  // namespace Raykout

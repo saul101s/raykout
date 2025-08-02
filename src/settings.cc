@@ -36,6 +36,7 @@ static void LoadSettings() {
   s_settings.screen.height = GetSetting<unsigned int>("screen", "height");
 
   // World settings
+  s_settings.world.width  = GetSetting<float>("world", "width");
   s_settings.world.height = GetSetting<float>("world", "height");
 
   s_loaded = true;

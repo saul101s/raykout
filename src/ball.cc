@@ -2,7 +2,7 @@
 
 namespace Raykout {
 Ball::Ball(const Config& config, const AABB& bounds)
-    : config_(config), bounds_(bounds) {}
+    : config_(config), bounds_(bounds), hp_(1) {}
 
 void Ball::update(float dt) {
   transform.position += velocity_ * dt;
@@ -16,14 +16,15 @@ void Ball::update(float dt) {
     hit_normal           = Vector2{1.0f, 0.0f};  // Left
   } else if (transform.position.y + config_.radius > bounds_.max.y) {
     transform.position.y = bounds_.max.y - config_.radius;
-    hit_normal           = Vector2{0.0f, -1.0f};  // Bottom
+    hit_normal           = Vector2{0.0f, -1.0f};  // Top
   } else if (transform.position.y - config_.radius < bounds_.min.y) {
+    hp_ = 0;
     transform.position.y = bounds_.min.y + config_.radius;
-    hit_normal           = Vector2{0.0f, 1.0f};  // Top
+    hit_normal           = Vector2{0.0f, 1.0f};  // Bottom
   }
 
   if (!hit_normal.isZeroLength())
-    velocity_ = velocity_.reflected(hit_normal);
+    velocity_.reflect(hit_normal);
 }
 
 void Ball::launch(Vector2 direction) {

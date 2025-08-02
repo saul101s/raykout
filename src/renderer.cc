@@ -13,6 +13,10 @@ void SetViewport(const Viewport& viewport) {
   s_viewport = viewport;
 }
 
+Vector2 GetWorldSize() {
+  return {s_world_width, s_world_height};
+}
+
 void SetWorldSize(float width, float height) {
   s_world_width  = width;
   s_world_height = height;
@@ -38,7 +42,7 @@ float ScreenToWorld(float v) {
 // Point
 Vector2 ScreenToWorld(Vector2 v) {
   return {ScreenToWorld(v.x - s_viewport.x),
-          ScreenToWorld(s_viewport.y - v.y)}; // Inverted axis
+          ScreenToWorld(s_viewport.y - v.y)};  // Inverted axis
 }
 
 void DrawRectangle(const PriRectangle& rect, const RColor& color) {

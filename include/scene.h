@@ -18,6 +18,8 @@ class Scene {
   void update(float dt);
   void draw();
 
+  unsigned int ballsRemaining() { return ball_.get() ? 1 : 0; }
+
  private:
   void solveCollisions(float dt);
   void solveCollisionBallPaddle(float dt);

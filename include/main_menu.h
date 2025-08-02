@@ -17,15 +17,11 @@ class MainMenu {
   void draw();
 
   bool isButtonPressed(MainMenuButton button) {
-    return state_.pressed & button;
+    return button_pressed_ & button;
   }
 
  private:
-  struct State {
-    int pressed;
-  };
-
-  State state_;
+  int button_pressed_;
   Button play_button_;
   Button quit_button_;
 };

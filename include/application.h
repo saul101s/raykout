@@ -2,6 +2,7 @@
 
 #include "scene.h"
 #include "main_menu.h"
+#include "game_over.h"
 #include "renderer.h"
 
 namespace Raykout {
@@ -26,10 +27,12 @@ class Application {
   void updateViewport();
   void draw();
   void reload();
+  AABB worldBounds() const;
 
  private:
   Scene scene_;
   MainMenu main_menu_;
+  GameOver game_over_;
   State state_;
 
   Renderer::Viewport viewport_;

@@ -47,9 +47,12 @@ class Ball {
         Vector2{transform.position.x + config_.radius, transform.position.y + config_.radius}};
   }
 
+  bool enabled() const { return hp_ > 0; }
+
  private:
   Config config_;
   Vector2 velocity_;
   AABB bounds_;
+  int hp_;
 };
 }  // namespace Raykout

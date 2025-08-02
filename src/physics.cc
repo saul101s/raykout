@@ -9,23 +9,40 @@ bool TestAABBAABB(AABB a, AABB b) {
 
 // Real-time Collision Detection (https://realtimecollisiondetection.net/)
 bool TestMovingAABBAABB(AABB a, AABB b, Vector2 va, Vector2 vb, float& tfirst, float& tlast, Vector2& a_normal) {
+  Vector2 v = vb - va;  // relative velocity from b to a.
+  Vector2 axis[]{{1.0f, 0.0f},
+                 {0.0f, 1.0f}};
+
+  Vector2 normal;
+
   if (TestAABBAABB(a, b)) {  // a and b initially overlapping.
     tfirst = tlast = 0;
-    // TODO(saul): What's the value of the normal vector?
+    float time_to_exit = -1.0;
+
+    for (int i = 0; i < 2; i++) {
+      float axis_time_to_exit = 0;
+
+      if (v.d[i] < 0.0f)
+        axis_time_to_exit = (a.min.d[i] - b.max.d[i]) / v.d[i];
+      else if (v.d[i] > 0.0f)
+        axis_time_to_exit = (a.max.d[i] - b.min.d[i]) / v.d[i];
+
+      if (axis_time_to_exit > time_to_exit) {
+        time_to_exit = axis_time_to_exit;
+        normal     = axis[i] * (v.d[i] > 0.0f ? -1.0f : 1.0f);
+      }
+    }
+  
+    a_normal = normal;
     return true;
   }
 
-  Vector2 v = vb - va;  // relative velocity from b to a.
   if (v.isZeroLength()) return false;
 
   tfirst = 0.0f;  // Time of first contact (start intersecting).
   tlast  = 1.0f;  // Time of last contact (stop intersecting).
 
-  Vector2 normal;
   float max_tfirst = 0.0f;
-
-  Vector2 axis[]{{1.0f, 0.0f},
-                 {0.0f, 1.0f}};
 
   for (int i = 0; i < 2; i++) {
     if (v.d[i] < 0.0f) {
@@ -54,8 +71,8 @@ bool TestMovingAABBAABB(AABB a, AABB b, Vector2 va, Vector2 vb, float& tfirst, f
     }
 
     if (tfirst > max_tfirst) {
-      max_tfirst  = tfirst;
-      normal = axis[i] * (v.d[i] > 0.0f ? -1.0f : 1.0f);
+      max_tfirst = tfirst;
+      normal     = axis[i] * (v.d[i] > 0.0f ? -1.0f : 1.0f);
     }
 
     if (tfirst > tlast) return false;

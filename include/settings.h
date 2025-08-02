@@ -21,6 +21,7 @@ struct ScreenSettings {
 };
 
 struct WorldSettings {
+  float width;
   float height;
 };
 
@@ -34,7 +35,8 @@ struct Settings {
     // Default values
     screen.width        = 1200;
     screen.height       = 800;
-    world.height        = 22;
+    world.width         = 20;
+    world.height        = 20;
     paddle.width        = 2.0f;
     paddle.height       = 0.25f;
     paddle.max_speed    = 15.0f;
