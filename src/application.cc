@@ -1,10 +1,10 @@
 #include "application.h"
 
-#include "main_menu.h"
 #include "raylib.h"
-#include "physics.h"
 #include "renderer.h"
 #include "settings.h"
+#include "fsm.h"
+#include "states.h"
 
 const char* ICON_PATH = "assets/icon.png";
 
@@ -16,11 +16,21 @@ void Application::run() {
 }
 
 void Application::initialize() {
+  unsigned int mm_id = fsm_.addState(std::make_shared<FSMStateMainMenu>("Main Menu"));
+  unsigned int g_id  = fsm_.addState(std::make_shared<FSMStateGame>("Game"));
+  unsigned int go_id = fsm_.addState(std::make_shared<FSMStateGameOver>("Game Over"));
+  quit_state_id_     = fsm_.addState(std::make_shared<FSMStateQuit>("Quit"));
+  fsm_.addTransition(mm_id, g_id, FSMStateMainMenu::kStateMainMenuEvent_Play);
+  fsm_.addTransition(mm_id, quit_state_id_, FSMStateMainMenu::kStateMainMenuEvent_Quit);
+  fsm_.addTransition(g_id, go_id, FSMStateGame::kStateGameEvent_GameOver);
+  fsm_.addTransition(go_id, g_id, FSMStateGameOver::kStateGameOverEvent_Retry);
+  fsm_.addTransition(go_id, mm_id, FSMStateGameOver::kStateGameOverEvent_Menu);
+
   const Raykout::Settings& settings = Raykout::GetSettings();
 
   float world_width  = settings.world.width;
   float world_height = settings.world.height;
-  aspect_ = world_width / world_height;
+  aspect_            = world_width / world_height;
   Raykout::Renderer::SetWorldSize(world_width, world_height);
 
   // Set vsync and work with high DPI displays.
@@ -34,18 +44,12 @@ void Application::initialize() {
     SetWindowIcon(icon);
 
   updateViewport();
-
-  state_ = kState_MainMenu;
 }
 
 void Application::loop() {
-  while (!WindowShouldClose() && kState_Quit != state_) {
+  while (!WindowShouldClose() && fsm_.currentState() != quit_state_id_) {
     update(GetFrameTime());
     draw();
-
-    if (IsKeyDown(KEY_ENTER)) {
-      reload();
-    }
   }
 }
 
@@ -54,36 +58,7 @@ void Application::update(float dt) {
     updateViewport();
   }
 
-  switch (state_) {
-    case kState_MainMenu: {
-      main_menu_.update(dt);
-      if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Play)) {
-        scene_.load(worldBounds());
-        state_ = kState_Game;
-      }
-      if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Quit)) {
-        state_ = kState_Quit;
-      }
-    } break;
-    case kState_Game: {
-      scene_.update(dt);
-      if (scene_.ballsRemaining() == 0) {
-        state_ = kState_GameOver;
-      }
-    } break;
-    case kState_GameOver: {
-      game_over_.update(dt);
-      if (game_over_.isButtonPressed(GameOver::kGameOverButton_Retry)) {
-        scene_.load(worldBounds());
-        state_ = kState_Game;
-      }
-      if (game_over_.isButtonPressed(GameOver::kGameOverButton_Menu)) {
-        state_ = kState_MainMenu;
-      }
-    } break;
-    case kState_Quit: {
-    } break;
-  }
+  fsm_.update(GetFrameTime());
 }
 
 void Application::updateViewport() {
@@ -116,32 +91,9 @@ void Application::draw() {
   DrawRectangle(viewport_.x - viewport_.width / 2, viewport_.y - viewport_.height / 2, viewport_.width, viewport_.height, {20, 20, 20, 255});
   DrawFPS(viewport_.x + viewport_.width / 2 - 100, viewport_.y - viewport_.height / 2 + 10);
 
-  switch (state_) {
-    case kState_MainMenu: {
-      main_menu_.draw();
-    } break;
-    case kState_Game: {
-      scene_.draw();
-    } break;
-    case kState_GameOver: {
-      game_over_.draw();
-    } break;
-  }
+  fsm_.draw();
 
   // Swap buffers
   EndDrawing();
-}
-
-void Application::reload() {
-  CloseWindow();
-  Raykout::ReloadSettings();
-  initialize();
-}
-
-AABB Application::worldBounds() const {
-  Vector2 world_size      = Raykout::Renderer::GetWorldSize();
-  float half_world_width  = world_size.x / 2.0f;
-  float half_world_height = world_size.y / 2.0f;
-  return {{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
 }
 }  // namespace Raykout

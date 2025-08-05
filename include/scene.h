@@ -15,6 +15,7 @@ class Scene {
   ~Scene() = default;
 
   void load(AABB bounds);
+  void unload();
   void update(float dt);
   void draw();
 

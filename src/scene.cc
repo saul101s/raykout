@@ -6,9 +6,7 @@ namespace Raykout {
 
 void Scene::load(AABB bounds) {
   // TODO(saul): Load objects from file
-  paddle_.reset();
-  ball_.reset();
-  bricks_.clear();
+  unload();
 
   const Raykout::Settings& settings = Raykout::GetSettings();
 
@@ -33,6 +31,12 @@ void Scene::load(AABB bounds) {
       bricks_.push_back(brick_config);
       bricks_.back().transform.position = {(float)x * xoffset, float(y) * yoffset};
     }
+}
+
+void Scene::unload() {
+  paddle_.reset();
+  ball_.reset();
+  bricks_.clear();
 }
 
 void Scene::update(float dt) {
@@ -72,9 +76,9 @@ void Scene::solveCollisionsBallBricks(float dt) {
     if (!brick.enabled()) continue;
     bool test = Raykout::TestMovingAABBAABB(brick.aabb(), ball_->aabb(), Vector2(), ball_->velocity(), tfirst, tlast, normal);
     if (test && tfirst < dt) {
-      ball_->onCollision(normal, "breck");
+      ball_->onCollision(normal, "brick");
       brick.damage(1);
-      AABB aabb = ball_->aabb();
+      AABB aabb   = ball_->aabb();
       Vector2 vel = ball_->velocity();
       break;
     }
@@ -83,7 +87,10 @@ void Scene::solveCollisionsBallBricks(float dt) {
 
 void Scene::draw() {
   Raykout::Renderer::DrawRectangle(paddle_->primitive(), RColor::White());
-  Raykout::Renderer::DrawCircle(ball_->primitive(), {150, 50, 50, 255});
+
+  if (ballsRemaining() > 0)
+    Raykout::Renderer::DrawCircle(ball_->primitive(), {150, 50, 50, 255});
+
   for (const auto& brick : bricks_) {
     if (brick.enabled())
       Raykout::Renderer::DrawRectangle(brick.primitive(), RColor::DarkGreen());

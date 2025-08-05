@@ -1,0 +1,71 @@
+#include "states.h"
+
+#include "main_menu.h"
+
+namespace Raykout {
+
+void FSMStateMainMenu::onEnter() {}
+
+void FSMStateMainMenu::update(float dt) {
+  main_menu_.update(dt);
+  if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Play)) {
+    event = kStateMainMenuEvent_Play;
+  }
+  if (main_menu_.isButtonPressed(MainMenu::kMainMenuButton_Quit)) {
+    event = kStateMainMenuEvent_Quit;
+  }
+}
+
+void FSMStateMainMenu::draw() {
+  main_menu_.draw();
+}
+
+void FSMStateMainMenu::onExit() {}
+
+void FSMStateGame::onEnter() {
+  Vector2 world_size      = Raykout::Renderer::GetWorldSize();
+  float half_world_width  = world_size.x / 2.0f;
+  float half_world_height = world_size.y / 2.0f;
+  AABB bounds             = {{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
+  scene_.load(bounds);
+}
+
+void FSMStateGame::update(float dt) {
+  scene_.update(dt);
+  if (scene_.ballsRemaining() == 0) {
+    event = kStateGameEvent_GameOver;
+  }
+}
+
+void FSMStateGame::draw() {
+  scene_.draw();
+}
+
+void FSMStateGame::onExit() {
+  scene_.unload();
+}
+
+void FSMStateGameOver::onEnter() {}
+
+void FSMStateGameOver::update(float dt) {
+  game_over_.update(dt);
+  if (game_over_.isButtonPressed(GameOver::kGameOverButton_Retry)) {
+    event = kStateGameOverEvent_Retry;
+  }
+  if (game_over_.isButtonPressed(GameOver::kGameOverButton_Menu)) {
+    event = kStateGameOverEvent_Menu;
+  }
+}
+
+void FSMStateGameOver::draw() {
+  game_over_.draw();
+}
+
+void FSMStateGameOver::onExit() {}
+
+void FSMStateQuit::onEnter() {}
+void FSMStateQuit::update(float dt) {}
+void FSMStateQuit::draw() {}
+void FSMStateQuit::onExit() {}
+
+}  // namespace Raykout
