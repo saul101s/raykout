@@ -1,0 +1,3 @@
+audio/main_menu_bg: https://pixabay.com/music/upbeat-cyberpunk-night-drive-with-retro-futuristic-arps-music-385800/
+audio/ui_button_hover: https://pixabay.com/sound-effects/ui-sounds-pack-3-7-359721/
+audio/ui_button_click: https://pixabay.com/sound-effects/ui-sound-374228/

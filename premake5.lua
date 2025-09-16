@@ -22,7 +22,7 @@ workspace "Raykout"
     runtime "Release"
     optimize "On"
 
-  outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+  local outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 project "Raykout"
   kind "ConsoleApp"
@@ -31,15 +31,17 @@ project "Raykout"
 
   targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
   objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+  debugdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 
   postbuildcommands {
    "{MKDIR} ".."\"%{wks.location}../bin/\"",
    "{COPYFILE} %[%{!cfg.buildtarget.abspath}] \"%{wks.location}../bin/%{cfg.buildtarget.name}\"",
    "{COPYDIR} \"%{wks.location}../assets/\" \"%{wks.location}../bin/assets\"",
+   "{COPYDIR} \"%{wks.location}../assets/\" \"%{wks.location}/bin/" .. outputdir .. "/%{prj.name}/assets\"",
   }
 
   -- Generate asm
-  buildoptions {"/FA"}
+  -- buildoptions {"/FA"}
 
   files {
     "include/*.h",
@@ -53,8 +55,9 @@ project "Raykout"
     "deps/**/include/",
   }
 
-  libdirs { 
+  libdirs {
     "deps/raylib/lib/",
+    "deps/soloud/lib/",
   }
 
-  links {"raylib", "winmm", "gdi32", "opengl32"}
+  links {"raylib", "soloud_x64", "winmm", "gdi32", "opengl32"}

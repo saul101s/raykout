@@ -1,5 +1,6 @@
 #include "main_menu.h"
 
+#include "settings.h"
 #include "renderer.h"
 #include "button.h"
 #include "vector2.h"
@@ -8,13 +9,20 @@ namespace Raykout {
 MainMenu::MainMenu() {
   button_pressed_ = 0;
 
-  play_button_.position = {0.0f, -4.0f};
-  play_button_.size     = Vector2{4.0f, 2.0f};
-  play_button_.text     = "Start";
+  int hover_audio_handle = AudioManager::Instance().load(GetSettings().audio.ui_button_hover);
+  int click_audio_handle = AudioManager::Instance().load(GetSettings().audio.ui_button_click);
 
-  quit_button_.position = Vector2{0.0f, -6.5f};
-  quit_button_.size     = Vector2{4.0f, 2.0f};
-  quit_button_.text     = "Quit";
+  play_button_.position           = {0.0f, -4.0f};
+  play_button_.size               = Vector2{4.0f, 2.0f};
+  play_button_.text               = "Start";
+  play_button_.hover_audio_handle = hover_audio_handle;
+  play_button_.click_audio_handle = click_audio_handle;
+
+  quit_button_.position           = Vector2{0.0f, -6.5f};
+  quit_button_.size               = Vector2{4.0f, 2.0f};
+  quit_button_.text               = "Quit";
+  quit_button_.hover_audio_handle = hover_audio_handle;
+  quit_button_.click_audio_handle = click_audio_handle;
 }
 
 void MainMenu::update(float dt) {
@@ -34,7 +42,6 @@ void MainMenu::update(float dt) {
 }
 
 void MainMenu::draw() {
-
   Renderer::DrawText({"Raykout", 0.0f, 5.0f, 2.0f}, RColor::White());
 
   play_button_.draw();

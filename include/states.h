@@ -1,5 +1,6 @@
 #include "fsm.h"
 
+//#include "audio_manager.h"
 #include "main_menu.h"
 #include "scene.h"
 #include "game_over.h"
@@ -13,8 +14,7 @@ class FSMStateMainMenu : public FSMState {
     kStateMainMenuEvent_Quit
   };
 
-  FSMStateMainMenu(const char* name) : FSMState(name) {}
-
+  FSMStateMainMenu(const char* name);
   void onEnter() override;
   void update(float dt) override;
   void draw() override;
@@ -22,6 +22,8 @@ class FSMStateMainMenu : public FSMState {
 
  private:
   MainMenu main_menu_;
+  unsigned int bg_sample_;
+  unsigned int bg_voice_;
 };
 
 class FSMStateGame : public FSMState {

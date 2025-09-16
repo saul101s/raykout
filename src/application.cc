@@ -16,15 +16,15 @@ void Application::run() {
 }
 
 void Application::initialize() {
-  unsigned int mm_id = fsm_.addState(std::make_shared<FSMStateMainMenu>("Main Menu"));
-  unsigned int g_id  = fsm_.addState(std::make_shared<FSMStateGame>("Game"));
-  unsigned int go_id = fsm_.addState(std::make_shared<FSMStateGameOver>("Game Over"));
-  quit_state_id_     = fsm_.addState(std::make_shared<FSMStateQuit>("Quit"));
-  fsm_.addTransition(mm_id, g_id, FSMStateMainMenu::kStateMainMenuEvent_Play);
-  fsm_.addTransition(mm_id, quit_state_id_, FSMStateMainMenu::kStateMainMenuEvent_Quit);
-  fsm_.addTransition(g_id, go_id, FSMStateGame::kStateGameEvent_GameOver);
-  fsm_.addTransition(go_id, g_id, FSMStateGameOver::kStateGameOverEvent_Retry);
-  fsm_.addTransition(go_id, mm_id, FSMStateGameOver::kStateGameOverEvent_Menu);
+  unsigned int mm = fsm_.addState(std::make_shared<FSMStateMainMenu>("Main Menu"));
+  unsigned int g  = fsm_.addState(std::make_shared<FSMStateGame>("Game"));
+  unsigned int go = fsm_.addState(std::make_shared<FSMStateGameOver>("Game Over"));
+  quit_state_id_  = fsm_.addState(std::make_shared<FSMStateQuit>("Quit"));
+  fsm_.addTransition(mm, g, FSMStateMainMenu::kStateMainMenuEvent_Play);
+  fsm_.addTransition(mm, quit_state_id_, FSMStateMainMenu::kStateMainMenuEvent_Quit);
+  fsm_.addTransition(g, go, FSMStateGame::kStateGameEvent_GameOver);
+  fsm_.addTransition(go, g, FSMStateGameOver::kStateGameOverEvent_Retry);
+  fsm_.addTransition(go, mm, FSMStateGameOver::kStateGameOverEvent_Menu);
 
   const Raykout::Settings& settings = Raykout::GetSettings();
 

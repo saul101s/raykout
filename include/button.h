@@ -4,6 +4,7 @@
 
 #include "rcolor.h"
 #include "vector2.h"
+#include "audio_manager.h"
 
 namespace Raykout {
 class Button {
@@ -22,6 +23,9 @@ class Button {
     RColor down_color = RColor::DarkGreen();
   } style;
 
+  SampleHandle hover_audio_handle = -1;
+  SampleHandle click_audio_handle = -1;
+
   Vector2 position;
   Vector2 size;
   std::string text;
@@ -38,6 +42,7 @@ class Button {
   bool isInButtonBounds(Vector2 point);
 
  private:
-  int state_;
+  int state_ = 0;
+  int prev_state_ = 0;
 };
 }  // namespace Raykout

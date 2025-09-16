@@ -39,6 +39,10 @@ static void LoadSettings() {
   s_settings.world.width  = GetSetting<float>("world", "width");
   s_settings.world.height = GetSetting<float>("world", "height");
 
+  // Audio settings
+  s_settings.audio.main_menu_bg    = GetSetting<const char*>("audio", "main_menu_bg");
+  s_settings.audio.ui_button_hover = GetSetting<const char*>("audio", "ui_button_hover");
+
   s_loaded = true;
 }
 

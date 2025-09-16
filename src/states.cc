@@ -1,10 +1,17 @@
 #include "states.h"
 
-#include "main_menu.h"
+#include "settings.h"
+#include "audio_manager.h"
 
 namespace Raykout {
 
-void FSMStateMainMenu::onEnter() {}
+FSMStateMainMenu::FSMStateMainMenu(const char* name) : FSMState(name) {
+  bg_sample_ = AudioManager::Instance().load(GetSettings().audio.main_menu_bg);
+}
+
+void FSMStateMainMenu::onEnter() {
+  bg_voice_ = AudioManager::Instance().play(bg_sample_);
+}
 
 void FSMStateMainMenu::update(float dt) {
   main_menu_.update(dt);
@@ -20,7 +27,9 @@ void FSMStateMainMenu::draw() {
   main_menu_.draw();
 }
 
-void FSMStateMainMenu::onExit() {}
+void FSMStateMainMenu::onExit() {
+  AudioManager::Instance().stop(bg_voice_);
+}
 
 void FSMStateGame::onEnter() {
   Vector2 world_size      = Raykout::Renderer::GetWorldSize();

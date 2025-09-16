@@ -56,6 +56,9 @@ class FSM {
   unsigned int addState(std::shared_ptr<FSMState> state) {
     state->id_ = (unsigned int)states_.size();
     states_.push_back(state);
+
+    if (state->id_ == 0) { state->onEnter(); }
+
     return state->id_;
   };
 

@@ -24,6 +24,7 @@ void Button::draw() {
 }
 
 void Button::update() {
+  prev_state_ = state_;
   state_ &= 0;
 
   Vector2 mouse_position = Vector2{GetMousePosition().x, GetMousePosition().y};
@@ -36,11 +37,18 @@ void Button::update() {
       state_ = kButtonState_Down;
     } else {
       state_ = kButtonState_Hover;
+
+      if (!(prev_state_ & kButtonState_Hover)
+          && hover_audio_handle >= 0)
+        AudioManager::Instance().play(hover_audio_handle);
     }
 
     if ((state_ & kButtonState_Down) &&
         IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
       state_ = kButtonState_Click;
+
+      if (click_audio_handle >= 0)
+        AudioManager::Instance().play(click_audio_handle);
     }
   }
 }
