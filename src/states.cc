@@ -1,12 +1,11 @@
 #include "states.h"
 
 #include "settings.h"
-#include "audio_manager.h"
 
 namespace Raykout {
 
 FSMStateMainMenu::FSMStateMainMenu(const char* name) : FSMState(name) {
-  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().audio.main_menu_bg);
+  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().music.main_menu_bg);
 }
 
 void FSMStateMainMenu::onEnter() {
@@ -32,7 +31,7 @@ void FSMStateMainMenu::onExit() {
 }
 
 FSMStateGame::FSMStateGame(const char* name) : FSMState(name) {
-  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().audio.game_bg);
+  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().music.game_bg);
 }
 
 void FSMStateGame::onEnter() {
@@ -62,7 +61,15 @@ void FSMStateGame::onExit() {
   AudioManager::Instance().stop(bg_voice_);
 }
 
-void FSMStateGameOver::onEnter() {}
+FSMStateGameOver::FSMStateGameOver(const char* name) : FSMState(name) {
+  sfx_sample_ = AudioManager::Instance().load_with_cache(GetSettings().sfx.game_over);
+  bg_sample_  = AudioManager::Instance().load_with_cache(GetSettings().music.game_over_bg);
+}
+
+void FSMStateGameOver::onEnter() {
+  AudioManager::Instance().play(sfx_sample_);
+  bg_voice_ = AudioManager::Instance().play(bg_sample_);
+}
 
 void FSMStateGameOver::update(float dt) {
   game_over_.update(dt);
@@ -78,7 +85,9 @@ void FSMStateGameOver::draw() {
   game_over_.draw();
 }
 
-void FSMStateGameOver::onExit() {}
+void FSMStateGameOver::onExit() {
+  AudioManager::Instance().stop(bg_voice_);
+}
 
 void FSMStateQuit::onEnter() {}
 void FSMStateQuit::update(float dt) {}

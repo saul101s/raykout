@@ -25,7 +25,7 @@ void Ball::update(float dt) {
 
   if (!hit_normal.isZeroLength()) {
     velocity_.reflect(hit_normal);
-    if (config_.sfx_hit_wall_sample_handle_ >= 0)
+    if (hit_normal.y < 1.0f && config_.sfx_hit_wall_sample_handle_ >= 0)
       AudioManager::Instance().play(config_.sfx_hit_wall_sample_handle_);
   }
 }

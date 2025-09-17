@@ -1,6 +1,6 @@
 #include "fsm.h"
 
-//#include "audio_manager.h"
+#include "audio_manager.h"
 #include "main_menu.h"
 #include "scene.h"
 #include "game_over.h"
@@ -22,8 +22,8 @@ class FSMStateMainMenu : public FSMState {
 
  private:
   MainMenu main_menu_;
-  unsigned int bg_sample_;
-  unsigned int bg_voice_;
+  SampleHandle bg_sample_;
+  VoiceHandle bg_voice_;
 };
 
 class FSMStateGame : public FSMState {
@@ -41,8 +41,8 @@ class FSMStateGame : public FSMState {
 
  private:
   Scene scene_;
-  unsigned int bg_sample_;
-  unsigned int bg_voice_;
+  SampleHandle bg_sample_;
+  VoiceHandle bg_voice_;
 };
 
 class FSMStateQuit : public FSMState {
@@ -62,7 +62,7 @@ class FSMStateGameOver : public FSMState {
     kStateGameOverEvent_Menu,
   };
 
-  FSMStateGameOver(const char* name) : FSMState(name) {}
+  FSMStateGameOver(const char* name);
 
   void onEnter() override;
   void update(float dt) override;
@@ -71,5 +71,8 @@ class FSMStateGameOver : public FSMState {
 
  private:
   GameOver game_over_;
+  SampleHandle sfx_sample_;
+  SampleHandle bg_sample_;
+  VoiceHandle bg_voice_;
 };
 }  // namespace Raykout

@@ -40,13 +40,15 @@ static void LoadSettings() {
   s_settings.world.height = GetSetting<float>("world", "height");
 
   // Audio settings
-  s_settings.audio.main_menu_bg    = GetSetting<const char*>("audio", "main_menu_bg");
-  s_settings.audio.game_bg         = GetSetting<const char*>("audio", "game_bg");
-  s_settings.audio.ball_hit_paddle = GetSetting<const char*>("audio", "ball_hit_paddle");
-  s_settings.audio.ball_hit_brick  = GetSetting<const char*>("audio", "ball_hit_brick");
-  s_settings.audio.ball_hit_wall   = GetSetting<const char*>("audio", "ball_hit_wall");
-  s_settings.audio.ui_button_hover = GetSetting<const char*>("audio", "ui_button_hover");
-  s_settings.audio.ui_button_click = GetSetting<const char*>("audio", "ui_button_click");
+  s_settings.music.main_menu_bg  = GetSetting<const char*>("music", "main_menu_bg");
+  s_settings.music.game_bg       = GetSetting<const char*>("music", "game_bg");
+  s_settings.music.game_over_bg  = GetSetting<const char*>("music", "game_over_bg");
+  s_settings.sfx.game_over       = GetSetting<const char*>("sfx", "game_over");
+  s_settings.sfx.ball_hit_paddle = GetSetting<const char*>("sfx", "ball_hit_paddle");
+  s_settings.sfx.ball_hit_brick  = GetSetting<const char*>("sfx", "ball_hit_brick");
+  s_settings.sfx.ball_hit_wall   = GetSetting<const char*>("sfx", "ball_hit_wall");
+  s_settings.sfx.ui_button_hover = GetSetting<const char*>("sfx", "ui_button_hover");
+  s_settings.sfx.ui_button_click = GetSetting<const char*>("sfx", "ui_button_click");
 
   s_loaded = true;
 }

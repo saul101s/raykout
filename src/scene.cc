@@ -17,9 +17,9 @@ void Scene::load(AABB bounds) {
   paddle_->transform.position = Vector2{0.0f, bounds.min.y + 1.0f};
 
   // Initialize the ball
-  SampleHandle ball_hit_paddle_sample_handle = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_paddle);
-  SampleHandle ball_hit_brick_sample_handle  = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_brick);
-  SampleHandle ball_hit_wall_sample_handle   = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_wall);
+  SampleHandle ball_hit_paddle_sample_handle = AudioManager::Instance().load_with_cache(settings.sfx.ball_hit_paddle);
+  SampleHandle ball_hit_brick_sample_handle  = AudioManager::Instance().load_with_cache(settings.sfx.ball_hit_brick);
+  SampleHandle ball_hit_wall_sample_handle   = AudioManager::Instance().load_with_cache(settings.sfx.ball_hit_wall);
   Raykout::Ball::Config ball_config{
       settings.ball.launch_speed,
       settings.ball.max_speed,
