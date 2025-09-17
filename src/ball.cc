@@ -18,13 +18,16 @@ void Ball::update(float dt) {
     transform.position.y = bounds_.max.y - config_.radius;
     hit_normal           = Vector2{0.0f, -1.0f};  // Top
   } else if (transform.position.y - config_.radius < bounds_.min.y) {
-    hp_ = 0;
+    hp_                  = 0;
     transform.position.y = bounds_.min.y + config_.radius;
     hit_normal           = Vector2{0.0f, 1.0f};  // Bottom
   }
 
-  if (!hit_normal.isZeroLength())
+  if (!hit_normal.isZeroLength()) {
     velocity_.reflect(hit_normal);
+    if (config_.sfx_hit_wall_sample_handle_ >= 0)
+      AudioManager::Instance().play(config_.sfx_hit_wall_sample_handle_);
+  }
 }
 
 void Ball::launch(Vector2 direction) {
@@ -40,8 +43,12 @@ void Ball::onCollision(Vector2 hit_normal, const std::string& tag) {
 
   if (tag.compare("paddle") == 0) {
     t = 0.9f - (velocity_.normalized() * Vector2::Up());
+    if (config_.sfx_hit_paddle_sample_handle_ >= 0)
+      AudioManager::Instance().play(config_.sfx_hit_paddle_sample_handle_);
   } else {
     t = 0.1f;
+    if (config_.sfx_hit_brick_sample_handle_ >= 0)
+      AudioManager::Instance().play(config_.sfx_hit_brick_sample_handle_);
   }
 
   float sd = (config_.max_speed - config_.launch_speed) * t;

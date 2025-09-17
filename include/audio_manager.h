@@ -20,8 +20,9 @@ class AudioManager {
   ~AudioManager();
   static AudioManager& Instance();
 
-  SampleHandle load(const char* filename);
+  SampleHandle load_with_cache(const char* filename);
   VoiceHandle play(SampleHandle sample_handle);
+  void setLoop(VoiceHandle voice_handle, bool loop);
   void stop(VoiceHandle voice_handle);
 
  private:

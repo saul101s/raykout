@@ -1,5 +1,6 @@
 #include "scene.h"
 
+#include "audio_manager.h"
 #include "settings.h"
 
 namespace Raykout {
@@ -16,7 +17,16 @@ void Scene::load(AABB bounds) {
   paddle_->transform.position = Vector2{0.0f, bounds.min.y + 1.0f};
 
   // Initialize the ball
-  Raykout::Ball::Config ball_config{settings.ball.launch_speed, settings.ball.max_speed, settings.ball.radius};
+  SampleHandle ball_hit_paddle_sample_handle = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_paddle);
+  SampleHandle ball_hit_brick_sample_handle  = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_brick);
+  SampleHandle ball_hit_wall_sample_handle   = AudioManager::Instance().load_with_cache(settings.audio.ball_hit_wall);
+  Raykout::Ball::Config ball_config{
+      settings.ball.launch_speed,
+      settings.ball.max_speed,
+      settings.ball.radius,
+      ball_hit_paddle_sample_handle,
+      ball_hit_brick_sample_handle,
+      ball_hit_wall_sample_handle};
   ball_                     = std::make_shared<Ball>(ball_config, bounds);
   ball_->transform.position = paddle_->transform.position + Vector2{0.0f, settings.paddle.height / 2.0f + settings.ball.radius};
   paddle_->attachBall(ball_);

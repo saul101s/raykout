@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "audio_manager.h"
 #include "transform2d.h"
 #include "renderer.h"
 #include "physics.h"
@@ -10,9 +11,12 @@ namespace Raykout {
 class Ball {
  public:
   struct Config {
-    float launch_speed;
-    float max_speed;
-    float radius;
+    float launch_speed                         = 8.0f;
+    float max_speed                            = 15.0f;
+    float radius                               = 0.2f;
+    SampleHandle sfx_hit_paddle_sample_handle_ = -1;
+    SampleHandle sfx_hit_brick_sample_handle_  = -1;
+    SampleHandle sfx_hit_wall_sample_handle_   = -1;
   };
 
   Transform2d transform;

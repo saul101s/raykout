@@ -9,8 +9,8 @@ namespace Raykout {
 MainMenu::MainMenu() {
   button_pressed_ = 0;
 
-  int hover_audio_handle = AudioManager::Instance().load(GetSettings().audio.ui_button_hover);
-  int click_audio_handle = AudioManager::Instance().load(GetSettings().audio.ui_button_click);
+  int hover_audio_handle = AudioManager::Instance().load_with_cache(GetSettings().audio.ui_button_hover);
+  int click_audio_handle = AudioManager::Instance().load_with_cache(GetSettings().audio.ui_button_click);
 
   play_button_.position           = {0.0f, -4.0f};
   play_button_.size               = Vector2{4.0f, 2.0f};

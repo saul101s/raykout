@@ -41,7 +41,12 @@ static void LoadSettings() {
 
   // Audio settings
   s_settings.audio.main_menu_bg    = GetSetting<const char*>("audio", "main_menu_bg");
+  s_settings.audio.game_bg         = GetSetting<const char*>("audio", "game_bg");
+  s_settings.audio.ball_hit_paddle = GetSetting<const char*>("audio", "ball_hit_paddle");
+  s_settings.audio.ball_hit_brick  = GetSetting<const char*>("audio", "ball_hit_brick");
+  s_settings.audio.ball_hit_wall   = GetSetting<const char*>("audio", "ball_hit_wall");
   s_settings.audio.ui_button_hover = GetSetting<const char*>("audio", "ui_button_hover");
+  s_settings.audio.ui_button_click = GetSetting<const char*>("audio", "ui_button_click");
 
   s_loaded = true;
 }

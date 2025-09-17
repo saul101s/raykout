@@ -6,7 +6,7 @@
 namespace Raykout {
 
 FSMStateMainMenu::FSMStateMainMenu(const char* name) : FSMState(name) {
-  bg_sample_ = AudioManager::Instance().load(GetSettings().audio.main_menu_bg);
+  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().audio.main_menu_bg);
 }
 
 void FSMStateMainMenu::onEnter() {
@@ -31,12 +31,19 @@ void FSMStateMainMenu::onExit() {
   AudioManager::Instance().stop(bg_voice_);
 }
 
+FSMStateGame::FSMStateGame(const char* name) : FSMState(name) {
+  bg_sample_ = AudioManager::Instance().load_with_cache(GetSettings().audio.game_bg);
+}
+
 void FSMStateGame::onEnter() {
   Vector2 world_size      = Raykout::Renderer::GetWorldSize();
   float half_world_width  = world_size.x / 2.0f;
   float half_world_height = world_size.y / 2.0f;
   AABB bounds             = {{-half_world_width, -half_world_height}, {half_world_width, half_world_height}};
   scene_.load(bounds);
+
+  bg_voice_ = AudioManager::Instance().play(bg_sample_);
+  AudioManager::Instance().setLoop(bg_voice_, true);
 }
 
 void FSMStateGame::update(float dt) {
@@ -52,6 +59,7 @@ void FSMStateGame::draw() {
 
 void FSMStateGame::onExit() {
   scene_.unload();
+  AudioManager::Instance().stop(bg_voice_);
 }
 
 void FSMStateGameOver::onEnter() {}

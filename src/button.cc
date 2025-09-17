@@ -30,26 +30,28 @@ void Button::update() {
   Vector2 mouse_position = Vector2{GetMousePosition().x, GetMousePosition().y};
   mouse_position         = Renderer::ScreenToWorld(mouse_position);
 
-  if (isInButtonBounds(mouse_position)) {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      state_ = kButtonState_Press;
-    } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      state_ = kButtonState_Down;
-    } else {
-      state_ = kButtonState_Hover;
+  bool inBounds = isInButtonBounds(mouse_position);
 
-      if (!(prev_state_ & kButtonState_Hover)
-          && hover_audio_handle >= 0)
-        AudioManager::Instance().play(hover_audio_handle);
+  if (inBounds) {
+    state_ = kButtonState_Hover;
+  }
+  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && inBounds) {
+    state_ = kButtonState_Press;
+  }
+  if ((kButtonState_Press == prev_state_ || kButtonState_Down == prev_state_) &&
+      inBounds && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    state_ = kButtonState_Down;
+  }
+
+  if (kButtonState_Down == prev_state_ && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+    state_ = kButtonState_Click;
+    if (click_audio_handle >= 0) {
+      AudioManager::Instance().play(click_audio_handle);
     }
-
-    if ((state_ & kButtonState_Down) &&
-        IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-      state_ = kButtonState_Click;
-
-      if (click_audio_handle >= 0)
-        AudioManager::Instance().play(click_audio_handle);
-    }
+  } else if (kButtonState_Hover == state_ &&
+             kButtonState_Hover != prev_state_ &&
+             hover_audio_handle >= 0) {
+    AudioManager::Instance().play(hover_audio_handle);
   }
 }
 

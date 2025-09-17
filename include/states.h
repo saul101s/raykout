@@ -32,7 +32,7 @@ class FSMStateGame : public FSMState {
     kStateGameEvent_GameOver = 0,
   };
 
-  FSMStateGame(const char* name) : FSMState(name) {}
+  FSMStateGame(const char* name);
 
   void onEnter() override;
   void update(float dt) override;
@@ -41,6 +41,8 @@ class FSMStateGame : public FSMState {
 
  private:
   Scene scene_;
+  unsigned int bg_sample_;
+  unsigned int bg_voice_;
 };
 
 class FSMStateQuit : public FSMState {

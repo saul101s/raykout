@@ -16,7 +16,7 @@ bool TestMovingAABBAABB(AABB a, AABB b, Vector2 va, Vector2 vb, float& tfirst, f
   Vector2 normal;
 
   if (TestAABBAABB(a, b)) {  // a and b initially overlapping.
-    tfirst = tlast = 0;
+    tfirst = tlast     = 0;
     float time_to_exit = -1.0;
 
     for (int i = 0; i < 2; i++) {
@@ -29,10 +29,10 @@ bool TestMovingAABBAABB(AABB a, AABB b, Vector2 va, Vector2 vb, float& tfirst, f
 
       if (axis_time_to_exit > time_to_exit) {
         time_to_exit = axis_time_to_exit;
-        normal     = axis[i] * (v.d[i] > 0.0f ? -1.0f : 1.0f);
+        normal       = axis[i] * (v.d[i] > 0.0f ? -1.0f : 1.0f);
       }
     }
-  
+
     a_normal = normal;
     return true;
   }
@@ -47,7 +47,7 @@ bool TestMovingAABBAABB(AABB a, AABB b, Vector2 va, Vector2 vb, float& tfirst, f
   for (int i = 0; i < 2; i++) {
     if (v.d[i] < 0.0f) {
       if (b.max.d[i] < a.min.d[i])
-        return 0;  // Moving apart.
+        return false;  // Moving apart.
       if (a.max.d[i] < b.min.d[i])
         // Dividing by v.d[i] < 0 inverts the substraction sign.
         tfirst = std::max((a.max.d[i] - b.min.d[i]) / v.d[i], tfirst);

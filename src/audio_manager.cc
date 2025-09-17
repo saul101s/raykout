@@ -22,7 +22,7 @@ namespace Raykout {
     return *instance;
   }
 
-  SampleHandle AudioManager::load(const char* filename) {
+  SampleHandle AudioManager::load_with_cache(const char* filename) {
     auto it = cache_.find(filename);
     if (cache_.end() != it) {
       return (SampleHandle)it->second;
@@ -39,6 +39,10 @@ namespace Raykout {
     assert(0 <= sample_handle && samples_.size() > sample_handle);
 
     return (VoiceHandle) soloud_.play(samples_[sample_handle]);
+  }
+
+  void AudioManager::setLoop(VoiceHandle voice_handle, bool loop) {
+    soloud_.setLooping(voice_handle, loop);
   }
 
   void AudioManager::stop(VoiceHandle voice_handle) {

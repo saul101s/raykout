@@ -1,5 +1,7 @@
 #include "game_over.h"
 
+#include "settings.h"
+#include "audio_manager.h"
 #include "renderer.h"
 
 namespace Raykout {
@@ -7,13 +9,20 @@ namespace Raykout {
 GameOver::GameOver() {
   button_pressed_ = 0;
 
-  retry_button_.position = {0.0f, -4.0f};
-  retry_button_.size     = Vector2{4.0f, 2.0f};
-  retry_button_.text     = "Retry";
+  int hover_audio_handle = AudioManager::Instance().load_with_cache(GetSettings().audio.ui_button_hover);
+  int click_audio_handle = AudioManager::Instance().load_with_cache(GetSettings().audio.ui_button_click);
+
+  retry_button_.position           = {0.0f, -4.0f};
+  retry_button_.size               = Vector2{4.0f, 2.0f};
+  retry_button_.text               = "Retry";
+  retry_button_.hover_audio_handle = hover_audio_handle;
+  retry_button_.click_audio_handle = click_audio_handle;
 
   menu_button_.position = {0.0f, -6.5f};
   menu_button_.size     = Vector2{4.0f, 2.0f};
   menu_button_.text     = "Menu";
+  menu_button_.hover_audio_handle = hover_audio_handle;
+  menu_button_.click_audio_handle = click_audio_handle;
 }
 
 void GameOver::update(float ft) {
