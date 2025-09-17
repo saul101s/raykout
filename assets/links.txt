@@ -1,7 +1,9 @@
-audio/main_menu_bg: https://pixabay.com/music/upbeat-cyberpunk-night-drive-with-retro-futuristic-arps-music-385800/
-audio/game_bg: https://pixabay.com/music/upbeat-game-8-bit-399898/
-audio/ball_hit_paddle: https://pixabay.com/sound-effects/bubble-pop-06-351337/
-audio/ball_hit_brick: https://pixabay.com/sound-effects/click-buttons-ui-menu-sounds-effects-button-7-203601/
-audio/ball_hit_wall: https://pixabay.com/sound-effects/bubble-pop-100784/
-audio/ui_button_hover: https://pixabay.com/sound-effects/ui-sounds-pack-3-7-359721/
-audio/ui_button_click: https://pixabay.com/sound-effects/ui-sound-374228/
+music/main_menu_bg: https://pixabay.com/music/upbeat-cyberpunk-night-drive-with-retro-futuristic-arps-music-385800/
+music/game_bg: https://pixabay.com/music/upbeat-game-8-bit-399898/
+music_game_over_bg: https://pixabay.com/music/corporate-quiz-countdown-194417/
+sfx/game_over: https://pixabay.com/sound-effects/invalid-selection-39351/
+sfx/ball_hit_paddle: https://pixabay.com/sound-effects/bubble-pop-06-351337/
+sfx/ball_hit_brick: https://pixabay.com/sound-effects/click-buttons-ui-menu-sounds-effects-button-7-203601/
+sfx/ball_hit_wall: https://pixabay.com/sound-effects/bubble-pop-100784/
+sfx/ui_button_hover: https://pixabay.com/sound-effects/ui-sounds-pack-3-7-359721/
+sfx/ui_button_click: https://pixabay.com/sound-effects/ui-sound-374228/
